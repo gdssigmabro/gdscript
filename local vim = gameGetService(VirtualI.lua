@@ -1,539 +1,477 @@
-+1 ROPE ESCAPE — Complete Map & Spatial Design Blueprint
-Professional Roblox Studio Level Design & Architectural Specification
+# +1 ROPE ESCAPE — Final Master Map & Spatial Blueprint
+*Professional Roblox Studio Level Design & Architectural Specification (v2.0 Final)*
 
-1. Executive Spatial Philosophy & Scale Metrics
-In Roblox Studio, standard player walkspeed is 16 studs/sec and jump height is ~7.2 studs (with default JumpPower 50). To ensure the game feels large without burdening players with tedious walking, all primary lobby amenities are contained within a 120-stud radius from the central spawn point (maximum 7.5 seconds walk time).
+---
 
+## 1. Global Coordinate System & Traversal Metrics
 
+All positions are established relative to a single, immutable origin `(0, 0, 0)` located at the dead-center surface of the Main Spawn Dais.
+
+```
 ================================================================================
-ROBLOX SCALE & TRAVERSAL BENCHMARKS:
-- Player Height: 5 studs
+ROBLOX STUDIO COORDINATE SYSTEM:
+- Origin (0, 0, 0): Center surface of Main Spawn Dais
+- +X Axis: EAST (Right)
+- -X Axis: WEST (Left)
+- +Z Axis: NORTH (Forward — World 1 Gate & World Portals)
+- -Z Axis: SOUTH (Backward — Training Compound, Rebirth Shrine & Rope Spire)
+- +Y Axis: UP (Vertical Height above ground level Y = 0)
+================================================================================
+ROBLOX CHARACTER & SCALE CONSTANTS:
+- Character Scale: Standard R15 / R6 (~5 studs tall, 2 studs wide)
 - Walkspeed: 16 studs/sec
-- Hub Spawn Radius: 35 studs (Diameter: 70 studs)
-- Hub Core Radius: 120 studs (~7.5s traversal to any lobby facility)
-- Outer World Boundary / Portal Ring: 160–220 studs from center (~10–13s traversal)
-- Base Stage Platform Size: 24x24 studs (safe landing) to 12x12 studs (precision)
-- Standard Grapple Point Reach: 45–70 studs
+- Jump Height: ~7.2 studs (JumpPower 50)
+- Safe Landing Platform: Minimum 16x16 to 24x24 studs
+- Precision Platform: 8x8 to 12x12 studs
+- Standard Grapple Line Reach: 50 to 75 studs
+- Optimal Swing Arc Radius: 25 to 45 studs
 ================================================================================
-2. Global Top-Down Layout & Coordinate Grid
-The game world is organized on a strict cartesian grid centered at (X: 0, Y: 10, Z: 0).
+WALKING TIME BUDGET FROM SPAWN (0, 0, 0):
+- Spawn → Rope Shop (-80, 0, +25):          84 studs  (~5.2 seconds)
+- Spawn → Trail Shop (-80, 0, -25):         84 studs  (~5.2 seconds)
+- Spawn → Leaderboards (+75, 0, 0):         75 studs  (~4.7 seconds)
+- Spawn → World 1 Entrance Gate (0, 0, +95):95 studs  (~5.9 seconds)
+- Spawn → Rebirth Shrine (-60, 4, -100):    117 studs (~7.3 seconds)
+- Spawn → 1X Rope Trainer (-15, 4, -105):   106 studs (~6.6 seconds)
+- Spawn → 5X Auto-Climb Rig (+95, 4, -125): 157 studs (~9.8 seconds)
+- Spawn → Outer World Gates Arc:            130–165 studs (~8–10 seconds)
+================================================================================
+```
 
+---
 
-                                  [NORTH: +Z]
-                               WORLD 1: GREEN CLIFFS
-                         (Stages 1–10 / Canyon Ascent)
-                                      ▲
-                                      │
-            [NORTH-WEST]              │              [NORTH-EAST]
-          PORTAL ARCHWAY:             │            PORTAL ARCHWAY:
-       WORLDS 2, 4, 6, 8              │           WORLDS 3, 5, 7, 9, 10
-      (Volcano, Factory, etc.)        │            (Sky, Frozen, etc.)
-                   \                  │                  /
-                    \                 │                 /
-                     \     [STAGE 1 GRAND ARCH]        /
-                      \    (X: 0, Y: 10, Z: +100)     /
-                       \              │              /
-                        \   [STAGE ENTRANCE PLAZA]  /
-                         \            │            /
-  [WEST: -X]              \           │           /              [EAST: +X]
-  ====================     \          │          /     ====================
-  SHOPS & SOCIAL PLAZA      \         │         /      COMPETITIVE PLAZA
-  - Rope Shop (-95, +30)     \        │        /       - 4x Giant Leaderboards
-  - Trail Shop (-95, -30)     ────────┼────────        - Podium Display (+85, 0)
-  - Social Gazebo & Firepit           │                - Daily Rewards Anchor
-  ====================        [CENTRAL SPAWN]          ====================
-                              (X: 0, Y: 10, Z: 0)
-                               Diameter: 70 studs
-                                      │
-                                      │
-                                      ▼
-                             [SOUTH TERRACE: -Z]
-                             Elevated +12 studs
-                         (Wide Grand Staircase: -Z: -55)
-                                      │
-               ┌──────────────────────┴──────────────────────┐
-               │                                             │
-      [REBIRTH MONUMENT]                            [AFK TRAINING MACHINES]
-      Ancient Rope Altar                            Tiered Expansion:
-      (X: -75, Y: 22, Z: -120)                      1X: (X: -25, Y: 22, Z: -125)
-                                                    2X: (X: +15, Y: 22, Z: -135)
-                                                    3X: (X: +55, Y: 22, Z: -150)
-                                                    5X: (X: +105, Y: 22, Z: -170)
-                                      │
-                                      ▼
-                      =================================
-                      THE ROPE TOWER (VISUAL CENTERPIECE)
-                      Base Center: (X: 0, Y: 20, Z: -260)
-                      Footprint: 180x180 studs
-                      Height: 1,800+ studs (Sky Limit)
-                      =================================
-                                  [SOUTH: -Z]
-3. Central Lobby & Hub Architecture
-3.1 Main Spawn Circle (X: 0, Y: 10, Z: 0)
-Geometry: Circular dais, 70-stud diameter, elevated 2 studs above the general plaza cobblestone with chamfered marble curb edges.
-Surface Decal / Material: Smooth white stone with embedded cyan neon inlay rings. The center features the bold stylized graphic:
+## 2. Master Top-Down ASCII Map (Central Lobby Hub)
 
-+1 ROPE ESCAPE
-CLIMB • SWING • ESCAPE
-Surrounding Buffer: A 30-stud completely clear ring around the dais. No trees, large walls, or bulky kiosks block line-of-sight. When a player rotates their camera 360 degrees, every major destination is visible instantly.
-3.2 Sightlines & 360° Visual Horizon from Spawn
-Direction / Bearing	Visual Landmark	Distance (studs)	Key Identifiers
-Direct North (0°)	Stage 1 Entrance & World 1	100	Giant timber-and-rope suspension gate, floating rope targets, lush green mountain pass
-Direct South (180°)	The Rope Tower	260	Colossal vertical mega-structure disappearing into high-altitude cloud cover
-South-East (135°)	AFK Rope Training Compound	120–180	Industrial cranes, automated moving cables, bright neon multiplier signs (1X to 5X)
-South-West (225°)	The Rebirth Altar	130	Glowing golden rope core wound around an obsidian monolith, rising particle spirals
-Direct West (270°)	Rope Shop & Trail Boutique	95	Warm timber trading post with vertical rack of suspended neon ropes; adjoining particle trail gallery
-Direct East (90°)	Hall of Leaderboards	85	Four monolithic stone-and-gold leaderboard tablets flanked by top-player display pedestals
-North-West (315°)	Western Portal Gate	160	Obsidian archway leading to Worlds 2, 4, 6, 8
-North-East (45°)	Eastern Portal Gate	160	Crystalline sky-stone archway leading to Worlds 3, 5, 7, 9, 10
-4. The Rope Tower (Visual Centerpiece & World Anchor)
-4.1 Purpose & Visual Silhouette
-The Rope Tower is not an enclosed stone cylinder; it is an open-frame, dizzying vertical labyrinth designed to constantly trigger the instinct: "I need to reach the top."
+```
+                                      [+Z: NORTH]
+                                 WORLD 1: GREEN CLIFFS
+                               (Direct Physical Bridge)
+                                          ▲
+                                          │
+       [WEST WORLD GATES ARC]             │             [EAST WORLD GATES ARC]
+    ┌──────────────────────────┐    [WORLD 1 GATE]   ┌──────────────────────────┐
+    │ Gate 2: Volcanic Canyon  │   (0, 0, +95 to +110)│ Gate 3: Sky Islands     │
+    │ Gate 4: Industry Factory │          │          │ Gate 5: Frozen Mountain │
+    │ Gate 6: Sunken Ruins     │          │          │ Gate 7: Desert Ruins    │
+    │ Gate 8: Space Station    │          │          │ Gate 9: Glitch Dimension│
+    └─────────────┬────────────┘          │          └────────────┬─────────────┘
+                  \                       │                       /
+                   \                      │                      /
+                    \              [PLAZA CONCOURSE]            /
+                     \                    │                    /
+  [-X: WEST]          \                   │                   /         [+X: EAST]
+════════════════════   \                  │                  /   ════════════════════
+SHOPS & SOCIAL ARC      \                 │                 /    COMPETITIVE PLAZA
+- Rope Shop              \                │                /     - 4x Giant
+  (-80, 0, +25)           \               │               /        Leaderboards
+- Trail Shop               ───────┬───────┴───────┬───────         (+75, 0, 0)
+  (-80, 0, -25)                   │               │              - Podium Statues
+- Social Firepit                  │  MAIN SPAWN   │                (+60, 0, 0)
+  (-50, 0, 0)                     │  (0, 0, 0)    │              ════════════════════
+════════════════════              │  Diam: 50 st  │
+                                  └───────┬───────┘
+                                          │
+                               [SOUTH GRAND STAIRS]
+                             (-Z: -45 to -60, +4 Y)
+                                          │
+                    ══════════════════════╧══════════════════════
+                                 ELEVATED SOUTH TERRACE
+                                     (Floor Y: +4)
+                    ─────────────────────────────────────────────
+     [REBIRTH SHRINE]                      [ROPE TRAINING COMPOUND]
+     - Sunken Basin (Y: 0)                 - 1X Rope Trainer (-15, 4, -105)
+     - Core Rope Monolith                  - 2X Auto-Climb Rig (+20, 4, -110)
+       (-60, 4, -100)                      - 3X Auto-Climb Rig (+55, 4, -118)
+                                           - 5X Auto-Climb Rig (+95, 4, -125)
+                    ─────────────────────────────────────────────
+                                          │
+                               [ROPE SPIRE COURTYARD]
+                                          │
+                            ==============================
+                                    THE ROPE SPIRE
+                                  (0, 4, -200 to -240)
+                                Base: 80x80 st, Y: +4
+                                Spire Peak: Y: +850 st
+                            ==============================
+                                      [-Z: SOUTH]
+```
 
+---
 
-                             [THE FINAL ASCENT]
-                                Y: 1,800 studs
-                          (Golden Beaming Citadel)
-                                     ▲
-                                    / \
-                                   /   \
-                             [UPPER ATMOSPHERE]
-                              Y: 1,200–1,500 studs
-                          Suspended Anti-Grav Platforms
-                          Glitch Shards & Space Anchors
-                                     │
-                             [THE CLOUD CEILING]
-                                Y: 900 studs
-                         Volumetric Mist & Cloud Layer
-                                     │
-                             [MID-TOWER SHAFTS]
-                               Y: 400–800 studs
-                         Giant Rotating Mechanical Gears
-                           Frozen Girders & Waterfall
-                                     │
-                             [TOWER FOUNDATION]
-                                Y: 20–400 studs
-                       Colossal Timber Trusses, Giant Iron
-                       Pulleys, Massive 10-Stud Thick Ropes
-                                     │
-                    ═════════════════════════════════════
-                         REAR LOBBY HORIZON LINE
-4.2 Structural Detailing
-Base Dimensions: 180x180 studs at Y: 20, tapering gradually to 40x40 studs near the summit at Y: 1,800.
-Materials: Reinforced iron beams, dark spruce timber pillars, thick braided hemp ropes (3–6 studs diameter), and illuminated copper anchor-rings.
-Animated Elements:
-Giant 30-stud iron winch wheels slowly rotating with heavy mechanical cadence.
-Massive counter-weight blocks hanging on braided cables gently bobbing vertically.
-Swaying suspended footbridges strung between secondary buttresses.
-Atmosphere & Skybreak: At Y: 850–950, dense procedural cloud layers wrap the tower waist. Visible structures pierce through the top of the cloud shelf, bathed in radiant golden sunlight and shimmering particle streams.
-5. Main Stage Path: Continuous World Flow
-5.1 The Continuous Journey Paradigm
-Stages do not float in isolated skyboxes. They form an uninterrupted geographical pilgrimage snaking outwards and upwards from the lobby.
+## 3. Elevation & Profile ASCII Diagram (North to South Slice along X = 0)
 
+```
+ Y (Height)
+ ▲
+ │                                              [ROPE SPIRE PEAK: Y: +850]
+ │                                              Glowing Endgame Spire / Beacon
+ │                                                          ▲
+ │                                                         / \
+ │                                                        /   \
+ │                                                       /     \
+ │                                                      /       \
+ │                                                     /         \
+ │                                                    /           \
+ │                                                   /  Mid-Shaft  \
+ │                                                  │  Cables/Rings │ (Y: +300-600)
+ │                                                  │               │
+ │                                                  │   Spire Base  │ (Y: +4 to +150)
+ │                                                  │  [80x80 studs]│
+ │                                                  │               │
+ │ [WORLD 1: GREEN CLIFFS]    [SPAWN PLAZA]         │               │
+ │ (Ascending Stages 1-10)     (Cobblestone)   STAIRS[SOUTH TERRACE]│
+ │  Y: +10 to +95               (Floor Y: 0)   +4 Y  [Floor Y: +4]  │
+ │     ▲                             │           │         │        │
+0┼─────┴─────────────────────────────┴───────────┴─────────┴────────┴─────────► Z
+   +110 to +800                      0          -45       -100    -200
+  [NORTH: +Z]                                                      [SOUTH: -Z]
+```
 
-LOBBY (Y: 10)
-  │ [Stage 1 Gate]
-  ▼
-WORLD 1: GREEN CLIFFS (Y: 10 → 120) ──────► Canyon Crossing (Stage 10)
-                                                    │
-                                                    ▼
-WORLD 2: VOLCANIC CANYON (Y: 40 → 180) ◄──── Smoldering Ravine
-  │
-  ▼
-Stage 20 Magma Chamber (Ascent Vent)
-  │
-  ▼ (Steam Geyser Transition)
-WORLD 3: SKY ISLANDS (Y: 350 → 550) ───────► Highest Stratosphere Cloud (Stage 30)
-                                                    │
-                                                    ▼ (Intake Exhaust Duct)
-WORLD 4: INDUSTRIAL FACTORY (Y: 200 → 420) ◄ High-Altitude Smelting Facility
-  │
-  ▼
-Stage 40 Super-Crane Delivery
-  │
-  ▼ (Mountain Flank Landing)
-WORLD 5: FROZEN MOUNTAIN (Y: 400 → 780) ───► Peak Glacier Rim (Stage 50)
-                                                    │
-                                                    ▼ (Sub-Glacial Abyss)
-WORLD 6: SUNKEN WORLD (Y: -150 → -20) ◄───── Trench Ruins (Sealed Oceanic Rift)
-  │
-  ▼
-Stage 60 Sunken Temple Gate
-  │
-  ▼ (Dry Subterranean Aqueduct)
-WORLD 7: DESERT RUINS (Y: 80 → 260) ───────► Monolithic Tomb Roof (Stage 70)
-                                                    │
-                                                    ▼ (Space Elevator Spire)
-WORLD 8: SPACE STATION (Y: 1,000 → 1,350) ◄ Orbital Ring Docking Array
-  │
-  ▼
-Stage 80 Dimensional Rift Core
-  │
-  ▼ (Fractured Spatial Void)
-WORLD 9: GLITCH DIMENSION (Y: 1,200 → 1,550) Multi-Biomic Surrealist Fragments
-  │
-  ▼
-Stage 90 The Sky Breach
-  │
-  ▼ (Golden Anchor Tether)
-WORLD 10: THE FINAL ASCENT (Y: 1,500 → 1,800) Exterior & Core of the Rope Tower
-  │
-  ▼
-STAGE 100: "THE PINNACLE ESCAPE" (Y: 1,800)
-5.2 Universal Stage Anatomy
-Every single stage conforms to a strict architectural grammar:
+---
 
-Starting Platform / Safe Zone:
-Minimum 18x18 studs. Textured with stone slabs or wooden deck.
-Clear world-themed borders (fences, rock lips) to prevent accidental falls before jumping.
-Contains the world-themed Checkpoint Pillar.
-The Rope Traversal Chamber:
-The challenge space containing anchor points, moving hazards, and kinetic obstacles.
-No ground floor: Underneath is either the scenic landscape 80+ studs below (with kill/respawn plane), lava, clouds, or open void.
-The Win Pad Dais:
-Minimum 20x20 stud octagonal platform positioned at the termination of the swing arc.
-Features the glowing cyan Win Pad (Diameter: 12 studs).
-Raised +1 stud with a step ramp and arched victory gateway leading directly into the starting platform of the subsequent stage.
-Immediate Visibility: From the start of Stage 
-N
-N, the Win Pad of Stage 
-N
-N is directly visible in the camera cone, framing the goal clearly.
-6. Granular Level Design: World 1 — Green Cliffs (Stages 1–10)
-World 1 teaches momentum, grapple timing, swinging arcs, and release windows in an inviting, low-stress alpine valley.
+## 4. Exact Spatial Coordinates & Facility Breakdown
 
+### 4.1 Central Spawn Platform (`0, 0, 0`)
+* **Dimensions**: Circular cylinder, 50-stud diameter, elevated +1 stud above plaza cobblestone (`Y: 1`).
+* **Visual Styling**: Pristine smooth white quartz stone with glowing cyan neon perimeter trim.
+* **Surface Graphic**: High-contrast vector emblem:
+  ```
+  +1 ROPE ESCAPE
+  CLIMB • SWING • ESCAPE
+  ```
+* **Sightline Integrity**: An unobstructed 25-stud clearance ring around the perimeter guarantees that panning the camera 360° immediately frames every single destination without wall occlusion.
 
-STAGE 1: "FIRST SWING" (Coordinates: X: 0 to 0, Y: 10 to 12, Z: 120 to 175)
-- Gap: 35 studs across a gentle mountain creek.
-- Anchor Point: 1x Timber Ring suspended from an overarching oak bough (Z: 147, Y: 32).
-- Mechanic Taught: Jump into air → Grapple → Build forward momentum → Release over landing pad.
-- Landing: 20x20 stud mossy stone pad with Win Pad 1.
-STAGE 2: "DOUBLE PENDULUM" (Z: 185 to 260)
-- Gap: 60 studs over a rocky gully.
-- Anchor Points: 2x Wooden Rings spaced 28 studs apart (Z: 210, Y: 35 and Z: 238, Y: 36).
-- Mechanic Taught: Swing 1 → Release at apex → Grapple Anchor 2 mid-air → Swing 2 → Land on Win Pad 2.
-STAGE 3: "THE DEEP CHASM" (Z: 270 to 360)
-- Gap: 75 studs wide, canyon drop 60 studs deep.
-- Anchor Point: 1x Heavy Iron Swivel Hook hung from a high rock arch (Y: 55).
-- Mechanic Taught: Long cable swing. The player must pump momentum or hold the rope for a full swing cycle to clear the far distance.
-STAGE 4: "THE TIMBER WALL" (Z: 370 to 420, Vertical Y: 12 to 55)
-- Height Gain: +43 studs vertically.
-- Anchor Points: 3x Vertical Spikes staggered up a sheer cliff face.
-- Mechanic Taught: Vertical rope climbing / rapid re-grappling up a vertical surface.
-STAGE 5: "SWAYING LOGS" (Z: 430 to 520, Y: 55)
-- Gap: 75 studs over a rushing alpine river.
-- Obstacle: Two large floating logs suspended by chains oscillating horizontally like pendulums.
-- Anchor Points: 2x rings mounted to the swinging logs themselves.
-- Mechanic Taught: Grappling onto a moving anchor point and timing release relative to moving momentum.
-STAGE 6: "CLIFFSIDE HOOK" (Z: 530 to 610, Y: 55 to 70)
-- Lateral Curve: The path turns 45 degrees East around a massive protruding granite buttress.
-- Anchor Point: Cantilevered crane post mounted on the rock corner (X: +25, Z: 570, Y: 90).
-- Mechanic Taught: Arc around an obstruction; releasing along an angular trajectory to land on a hidden ledge.
-STAGE 7: "THORNY RAVINE" (Z: 620 to 710, Y: 70)
-- Hazard: Bramble briars and jagged spike-logs lining the bottom and lower walls.
-- Traversal: Low ceiling obstacle requiring a flat, horizontal grapple release (low arc) rather than a high lofted swing.
-STAGE 8: "THE ROPE SPRINT" (Z: 720 to 830, Y: 70 to 95)
-- Distance: 100 studs.
-- Layout: 4x quick-hook wooden rings spaced 22 studs apart in rapid succession.
-- Mechanic Taught: Rhythm chaining — tap, swing, tap, swing without stopping.
-STAGE 9: "THE BROKEN SUSPENSION BRIDGE" (Z: 840 to 960, Y: 95)
-- Visual Scene: A shattered 120-stud rope bridge hanging in ruins.
-- Obstacle: Alternating between short run-up boards and mid-air grapple hooks strung beneath the remaining suspension cables.
-STAGE 10: "THE GRAND CANYON OF GREEN CLIFFS" (Z: 970 to 1,120, Y: 95 to 135)
-- Finale Gap: 140 studs wide.
-- Environment: Massive roaring waterfall in the background, misty spray particles.
-- Obstacle: 3x tiered rope points leading toward a massive elevated cliff peak.
-- Finale Win Pad: Giant 28x28 golden stone platform.
-- Transition Portal / Arch: Immediately ahead sits the scorched obsidian gateway leading into the smoking mouth of World 2 (Volcanic Canyon).
-7. Thematic, Visual, & Architectural Blueprints for Worlds 2–10
+### 4.2 The Rope Spire (`X: 0, Y: 4, Z: -200`)
+* **Role**: Visual icon, thematic anchor, and psychological motivator ("KEEP CLIMBING").
+* **Physical Footprint**: 80x80 studs at base (`Y: 4`), tapering gracefully to 18x18 studs near its summit at `Y: +850`.
+* **Geometry & Aesthetic**:
+  * An open architectural framework constructed of heavy dark spruce timber columns reinforced with riveted iron gusset plates.
+  * Massive 6-stud-diameter braided rope hawsers wrap around the core and anchor to ground-level iron turnbuckles.
+  * Suspended intermediate staging platforms (wooden decks, hanging cage gantries, decorative grappling rings) populate the silhouette.
+* **The Summit ("THE PINNACLE BEACON")**:
+  * Sits at `Y: +850`, casting a rotating golden volumetric light beam into the skybox and emitting subtle particle glimmers visible from any corner of the hub.
 
-┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│ WORLD PROGRESSION MATRIX                                                                    │
-├──────┬──────────────────────┬────────────────┬────────────────────────┬─────────────────────┤
-│ World│ Theme                │ Stage Range    │ Dominant Color Palette │ Primary Rope Anchor │
-├──────┼──────────────────────┼────────────────┼────────────────────────┼─────────────────────┤
-│ 1    │ Green Cliffs         │ Stages 1–10    │ Forest Green, Spruce   │ Carved Timber Ring  │
-│ 2    │ Volcanic Canyon      │ Stages 11–20   │ Basalt Black, Magma    │ Iron Slag Hook      │
-│ 3    │ Sky Islands          │ Stages 21–30   │ Cloud White, Azure     │ Luminous Aero-Ring  │
-│ 4    │ Industrial Factory   │ Stages 31–40   │ Hazard Yellow, Rust    │ Hydraulic Grapple   │
-│ 5    │ Frozen Mountain      │ Stages 41–50   │ Glacial Cyan, Snow     │ Forged Ice Piton    │
-│ 6    │ Sunken World         │ Stages 51–60   │ Deep Navy, Biolum Teal │ Runic Coral Anchor  │
-│ 7    │ Desert Ruins         │ Stages 61–70   │ Sandstone Gold, Ochre  │ Sun-Gilded Falcon   │
-│ 8    │ Space Station        │ Stages 71–80   │ Carbon Fiber, Neon Blue│ Mag-Beam Flux Node  │
-│ 9    │ Glitch Dimension     │ Stages 81–90   │ Void Violet, Magenta   │ Fractured Wireframe │
-│ 10   │ The Final Ascent     │ Stages 91–100  │ Imperial Gold, Celestial│ Sun-Anchor Aegis   │
-└──────┴──────────────────────┴────────────────┴────────────────────────┴─────────────────────┘
-World 2: Volcanic Canyon (Stages 11–20)
-Environment: Cavernous trench bordered by craggy obsidian spires, lava falls (Neon Orange with heat distortion particles), and steam geysers.
-Stage Flow: Progresses downwards through cracked lava shelves before ascending a volcanic chimney.
-Key Mechanics:
-Heat-damaged platforms that crumble 2.5 seconds after landing.
-Geysers of steam that push the swinging player upward or knock them off trajectory.
-Heavy chains suspended over boiling magma lakes.
-World 3: Sky Islands (Stages 21–30)
-Environment: Floating islands suspended above an endless sea of rolling volumetric clouds. Sunlight beams, drifting cloud particles, and soaring retro-stylized wooden airships in the background.
-Stage Flow: Ascending staircases of floating islands. Zero safety floor; missing an anchor drops the player into the cloud respawn layer.
-Key Mechanics:
-Dynamic crosswinds (visual wind streaks) that alter swing trajectory.
-Moving cloud platforms that dissipate if held too long.
-Airship cargo nets acting as climbable re-grapple surfaces.
-World 4: Industrial Factory (Stages 31–40)
-Environment: A colossal steampunk-industrial processing plant. Giant grinding cogwheels (20–40 studs diameter), conveyor belts with hazard stripes, hissings steam release pipes, and overhead rail gantries.
-Stage Flow: Traversal through the interior workings of a mega-machine.
-Key Mechanics:
-Rotating gear teeth where players must swing through gaps between rotating cogs.
-Overhead moving trolley hooks (rail grapples) that pull the player along a set path while dangling.
-Conveyor belt landing zones that accelerate player exit velocity.
-World 5: Frozen Mountain (Stages 41–50)
-Environment: A blizzard-swept alpine mountain ridge. Jagged blue glacial ice, blowing blizzard snow particles, frosted pine branches, and rickety abandoned mountaineering scaffolding.
-Stage Flow: Highly vertical switchback climbing up a 400-stud sheer cliff face.
-Key Mechanics:
-Low-friction ice platforms (sliding upon landing requires precise grapple catch).
-Falling icicles serving as dynamic hazards.
-Anchor points attached to swayable frozen cables buffeted by high winds.
-World 6: Sunken World (Stages 51–60)
-Environment: An ancient submerged Atlantis-style civilization housed inside a gigantic subterranean air pocket beneath the ocean. Massive coral reefs, bioluminescent jellyfish floating like balloons, sunken galleons, and glowing runic aqueducts.
-Stage Flow: Descent into sunken city ruins, across ancient palace pillars, through cracked submarine domes.
-Key Mechanics:
-Low-gravity floating feel simulated through wider swing arcs.
-Glowing sea-spores that refresh aerial rope dashes.
-Rope anchors mounted on swinging mast spars of ancient shipwrecked vessels.
-World 7: Desert Ruins (Stages 61–70)
-Environment: Sun-bleached sandstone canyons, colossal crumbling Pharaoh-style statues, half-buried obelisks, and violent dust devils spiraling in the distance.
-Stage Flow: Traverses across colossal temple colonnades and down into an excavation cavern before leaping out of the temple skylight.
-Key Mechanics:
-Collapsing sand columns.
-Swinging between statues' outstretched spears and sun-discs.
-Shifting sand slides that lead straight to drops unless grappled in time.
-World 8: Space Station (Stages 71–80)
-Environment: Futuristic orbital facility exterior. Dark starfield skybox with a giant rotating blue earth-like planet below. Solar panel wings, docking bays, modular habitat rings, and neon holographic billboards.
-Stage Flow: Orbital exterior parkour around hull structures, antennae arrays, and satellite dish fields.
-Key Mechanics:
-Zero-g traversal sections: grapples launch players in straight trajectories with negligible arc drop.
-Kinetic laser tripwires (touching resets to checkpoint).
-Magnetic repulsive pads that slingshot player momentum.
-World 9: Glitch Dimension (Stages 81–90)
-Environment: Surreal fractured void where previous biomes collide. A piece of World 1's grassy hillside is fused upside down to an industrial factory gear. Shimmering purple missing-texture grid patches, floating wireframe cubes, flickering neon sign fragments, and inverted gravity skyboxes.
-Stage Flow: Disorienting, non-Euclidean layout where players swing around sideways towers and broken platform fragments.
-Key Mechanics:
-Flickering anchor points that turn solid and ghosted on a rhythm.
-Gravity-flipping swing portals.
-Floating debris fields requiring rapid multi-grapple transfers.
-World 10: The Final Ascent (Stages 91–100)
-Environment: The grand culmination. The player is physically climbing the outer skin and interior hollow spire of The Rope Tower itself, starting at Y: 1,500 and summiting at Y: 1,800.
-Stage Flow: Pure vertical mastery. 10 stages of extreme, multi-hook, precision swinging. Looking over the ledge reveals the entire miniature map below: the green patches, the glowing red lava lines, the clouds, and the factory smokestacks.
-Stage 100 ("The Pinnacle Escape"):
-A 200-stud vertical launch sequence using 5 consecutive golden anchor rings swinging over open sky.
-Final landing is an enormous 80x80 stud grand marble platform with golden balustrades and a monolithic glowing Win Pad beneath a 40-stud floating neon monument:
+### 4.3 Rope Shop & Trail Shop (West Flank: `-X`)
+* **Rope Shop (`X: -80, Y: 0, Z: +25`)**:
+  * **Dimensions**: 40 studs wide, 24 studs deep, 20 studs high open-front timber trading post.
+  * **Physical Displays**: 8 recessed wall alcoves with spotlights. Each alcove houses a physically modeled 12-stud hanging sample of the available ropes:
+    * *Beginner*: Hemp Rope, Braided Nylon, Heavy Climber.
+    * *Mid-Tier*: Reinforced Steel Cable, Forged Chain, Golden Thread.
+    * *Elite*: Magma Coil, Void Plasma, Celestial Tether.
+  * **Signage**: Illuminated 3D wooden lettering: `ROPE SHOP`.
+* **Trail Shop (`X: -80, Y: 0, Z: -25`)**:
+  * **Dimensions**: 36 studs wide, 24 studs deep, 20 studs high boutique matching the architectural style.
+  * **Physical Displays**: 6 raised rotating glass pedestals with player mannequins running in loops, actively demonstrating trail particle effects (Spark, Flame, Electric, Rainbow, Void Mist).
+  * **Signage**: Vibrant neon lettering: `TRAIL SHOP`.
+* **Social Firepit (`X: -50, Y: 0, Z: 0`)**:
+  * Positioned midway between the shops and the spawn. A sunken circular stone hearth with log seating. Provides visual warmth and a natural gathering area.
 
-★ YOU ESCAPED ★
-THE TOP OF THE WORLD
-8. Hub Amenity Architecture & Spatial Breakdown
+### 4.4 Leaderboard Plaza (East Flank: `+X: +75, Y: 0, Z: 0`)
+* **Display Tablets**: Four monolithic obsidian slabs (18 studs wide × 24 studs tall × 2 studs deep) arranged in a gentle inward arc facing Spawn:
+  1. `MOST WINS` (Gold trim)
+  2. `MOST REBIRTHS` (Amethyst trim)
+  3. `HIGHEST ROPE LEVEL` (Cyan trim)
+  4. `FASTEST WORLD 1 CLEAR` (Emerald trim)
+* **Winner Podiums (`X: +60, Y: 0, Z: 0`)**:
+  * Three stepped circular marble pedestals (1st, 2nd, 3rd) displaying live 3D character avatars of top players holding their equipped ropes.
 
-                             [NORTH: STAGE 1]
-                                    ▲
-                                    │
-                                    │
-      [SHOPS & SOCIAL]              │              [LEADERBOARDS]
-    ┌──────────────────┐            │            ┌─────────────────┐
-    │  ROPE SHOP       │            │            │ WINS | REBIRTHS │
-    │  (Tiered Racks)  │            │            │ LEVEL| SPEED    │
-    │                  │       [SPAWN DAIS]      │                 │
-    │  TRAIL SHOP      │       (X:0, Y:10, Z:0)  │ TOP PLAYER      │
-    │  (Neon Dummies)  │            │            │ PODIUMS         │
-    │                  │            │            └─────────────────┘
-    │  SOCIAL GAZEBO   │            │
-    └──────────────────┘            ▼
-                               [SOUTH TERRACE]
-                                (Elevated +12)
-                ┌───────────────────┴───────────────────┐
-                │                                       │
-     [REBIRTH MONUMENT]                        [AFK TRAINING COMPOUND]
-     - Sunken Obsidian Basin                   - 1X Timber Wall (No Reqs)
-     - Colossal Golden Rope Knot               - 2X Steam Rig (3 Rebirths)
-     - Level Requirements Ring                 - 3X Hydraulic Cage (5 Rebirths)
-                                               - 5X Quantum Mega-Gantry (10 Rebs)
-8.1 Rope Shop & Trail Boutique (West Flank: X: -95, Z: 0)
-Building Envelope: 60 studs wide, 35 studs deep, 28 studs high open-front wooden-and-stone timber lodge.
-Rope Display Layout:
-The interior is arranged like an open-air arms vault.
-Along the rear wall stand 10 vertical display niches. Suspended inside each niche is a full 15-stud hanging sample of each rope tier, with a soft spotlight and a floating physical plaque displaying its stats:
-Tier 1 (Hemp / Climbing): Natural fibrous textures.
-Tier 2 (Steel / Cable / Chain): Metallic reflections, iron links.
-Tier 3 (Golden / Magma / Ice): Glowing neon cores, elemental particle drips.
-Tier 4 (Plasma / Void / Celestial): Hyper-animated beam emitters, swirling nebulas.
-Trail Boutique:
-Positioned immediately to the left of the Rope Shop under a stylized matching canopy.
-Features 6 rotating mannequin pedestals showing player avatars running in place, leaving trailing ribbon effects (Fire, Lightning, Rainbow, Void Particles).
-8.2 Leaderboard Plaza (East Flank: X: +85, Z: 0)
-Monolith Displays: Four 24-stud wide by 30-stud high dark granite tablets arranged in a shallow inward-facing semicircle.
-Boards:
-MOST WINS (Gold header trim)
-MOST REBIRTHS (Amethyst header trim)
-HIGHEST ROPE LEVEL (Cyan header trim)
-FASTEST WORLD 1 CLEAR (Emerald header trim)
-Podium Pedestals: In front of the tablets sit three tiered circular pedestals (1st, 2nd, 3rd) displaying live rigged 3D avatar statues of the top global players holding their equipped ropes.
-8.3 AFK Training Facility (South-East Terrace: X: +15 to +140, Z: -125 to -180)
-Set upon the elevated South Terrace (+12 studs above spawn level), accessible via a sweeping 40-stud wide grand stone staircase. The machines are aligned on a progressive diagonal receding backward toward the base of the Rope Tower.
+### 4.5 Rope Training Compound (Elevated South Terrace: `Floor Y: +4`)
+Set on an elevated stone promenade accessed via a 30-stud-wide grand staircase (`Z: -45 to -60`). The 4 machines are aligned in strict left-to-right progression order facing North toward the spawn:
 
-
+```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ THE AFK TRAINING COMPOUND                                                              │
-├─────────┬──────────────────────┬─────────────┬──────────────┬──────────────────────────┤
-│ Machine │ Name                 │ Coordinates │ Multiplier   │ Visual Design & Scale    │
-├─────────┼──────────────────────┼─────────────┼──────────────┼──────────────────────────┤
-│ Tier 1  │ Basic Rope Trainer   │ X: -25      │ 1X Rope EXP  │ 20x20 stud open timber   │
-│         │                      │ Z: -125     │ (No Reqs)    │ climbing wall, hemp ropes│
-├─────────┼──────────────────────┼─────────────┼──────────────┼──────────────────────────┤
-│ Tier 2  │ Power Rope Trainer   │ X: +15      │ 2X Rope EXP  │ 28x28 stud iron frame,   │
-│         │                      │ Z: -135     │ [3 Rebirths] │ moving pistons, pulleys  │
-├─────────┼──────────────────────┼─────────────┼──────────────┼──────────────────────────┤
-│ Tier 3  │ Advanced Rope Trainer│ X: +55      │ 3X Rope EXP  │ 35x35 stud enclosed cage,│
-│         │                      │ Z: -150     │ [5 Rebirths] │ motorized cable reels    │
-├─────────┼──────────────────────┼─────────────┼──────────────┼──────────────────────────┤
-│ Tier 4  │ Master Rope Trainer  │ X: +105     │ 5X Rope EXP  │ 50x50 stud colossal      │
-│         │                      │ Z: -170     │[10 Rebirths] │ industrial mega-gantry,  │
-│         │                      │             │              │ plasma-ring energy coils │
-└─────────┴──────────────────────┴─────────────┴──────────────┴──────────────────────────┘
-Spatial Signposting:
-Each machine has an illuminated neon overhead truss arch visible from the spawn:
-1X ROPE EXP (Clean White Neon)
-2X ROPE EXP — 3 REBIRTHS REQUIRED (Green Neon)
-3X ROPE EXP — 5 REBIRTHS REQUIRED (Blue Neon)
-5X ROPE EXP — 10 REBIRTHS REQUIRED (Blazing Gold Neon)
-Ineligible players walking toward locked machines encounter a semi-transparent energy barrier displaying a floating padlock icon and required Rebirth count.
-8.4 Rebirth Altar (South-West Terrace: X: -75, Z: -120)
-Geometry: A sunken circular obsidian sanctum, 45 studs in diameter, recessed 4 studs into the stone terrace.
-The Centerpiece: A colossal 20-stud-tall sculpture composed of thousands of strands of braided golden rope binding a massive, pulsating crystalline core.
-Progressive Pedestals: Surrounding the core are 10 circular stepping stones corresponding to Rebirth milestones:
-Stone 1: REBIRTH 1 (Level 10)
-Stone 2: REBIRTH 2 (Level 20)
-Stone 3: REBIRTH 3 (Level 30)
-(Progressing to Stone 10: MASTER REBIRTH - Level 100)
-Visual Aura: A radiant vertical light beacon shoots straight upward from the core into the clouds, visible across the entire lobby plaza.
-9. World Portal Plazas (Fast Travel & Unlocks)
-Portals are not simple flat floor decals; they are grandiose architectural gateways arranged along two symmetric crescent archways in the North-West and North-East sectors of the lobby perimeter.
+│ ROPE TRAINING COMPOUND LAYOUT & PROGRESSION                                            │
+├──────────────┬───────────────────┬──────────────┬────────────┬─────────────────────────┤
+│ Machine      │ Name              │ Center Pos   │ Multiplier │ Appearance & Size       │
+├──────────────┼───────────────────┼──────────────┼────────────┼─────────────────────────┤
+│ Tier 1       │ Rope Trainer      │ X: -15, Y: 4 │ 1x Rope EXP│ 16w x 16d x 16h studs.  │
+│              │                   │ Z: -105      │ (Free/0 R) │ Polished timber wall,   │
+│              │                   │              │            │ dual hanging hemp ropes.│
+├──────────────┼───────────────────┼──────────────┼────────────┼─────────────────────────┤
+│ Tier 2       │ Auto-Climb Rig    │ X: +20, Y: 4 │ 2x Rope EXP│ 22w x 20d x 22h studs.  │
+│              │                   │ Z: -110      │ (3 Rebirth)│ Steel girder frame,     │
+│              │                   │              │            │ moving pulleys, pistons.│
+├──────────────┼───────────────────┼──────────────┼────────────┼─────────────────────────┤
+│ Tier 3       │ Auto-Climb Rig    │ X: +55, Y: 4 │ 3x Rope EXP│ 28w x 24d x 28h studs.  │
+│              │                   │ Z: -118      │ (5 Rebirth)│ Enclosed mechanical cage│
+│              │                   │              │            │ motorized cable reels.  │
+├──────────────┼───────────────────┼──────────────┼────────────┼─────────────────────────┤
+│ Tier 4       │ Auto-Climb Rig    │ X: +95, Y: 4 │ 5x Rope EXP│ 36w x 30d x 36h studs.  │
+│              │                   │ Z: -125      │(10 Rebirth)│ Massive industrial      │
+│              │                   │              │            │ gantry, glowing plasma. │
+└──────────────┴───────────────────┴──────────────┴────────────┴─────────────────────────┘
+```
 
+* **Overhead Signage**:
+  * Every machine features an elevated, glowing billboard mounted to its header:
+    * `1X ROPE EXP` (Clean White Neon)
+    * `2X ROPE EXP • REQUIRES 3 REBIRTHS` (Vibrant Green Neon)
+    * `3X ROPE EXP • REQUIRES 5 REBIRTHS` (Vibrant Blue Neon)
+    * `5X ROPE EXP • REQUIRES 10 REBIRTHS` (Radiant Gold Neon)
+* **Access Boundary**: Locked rigs display a subtle translucent colored energy grid across their entrance with an animated padlock billboard.
 
-       [WESTERN PORTAL CRESCENT]                      [EASTERN PORTAL CRESCENT]
-              (North-West)                                   (North-East)
-         World 8: Space Station                         World 9: Glitch Dimension
-                   ▲                                              ▲
-                   │                                              │
-         World 6: Sunken World                          World 7: Desert Ruins
-                   ▲                                              ▲
-                   │                                              │
-         World 4: Industrial Factory                    World 5: Frozen Mountain
-                   ▲                                              ▲
-                   │                                              │
-         World 2: Volcanic Canyon                       World 3: Sky Islands
-                   └──────────────┐              ┌──────────────┘
-                                  │              │
-                           [CENTRAL LOBBY HUB: SPAWN]
-Portal Gate Architecture
-Each portal structure is 20 studs wide by 24 studs tall:
+### 4.6 Rebirth Shrine (South Terrace West: `X: -60, Y: 4, Z: -100`)
+* **Geometry**: A dedicated circular pavilion, 36-stud diameter, recessed 2 studs into the terrace floor.
+* **Monument Architecture**:
+  * An ancient weathered stone altar ring.
+  * In the center stands a 14-stud tall, coiled sculpture of a colossal golden rope tightly binding an intensely pulsating cyan mana crystal.
+  * Concentric floating stone rings slowly revolve around the core.
+* **Interactive Floor Ring**: The central stepping platform has etched glowing runes indicating current rebirth readiness:
+  ```
+  [ REBIRTH SHRINE ]
+  REBIRTH 1: ROPE LEVEL 10
+  REBIRTH 2: ROPE LEVEL 20
+  REBIRTH 3: ROPE LEVEL 30
+  ```
 
-World 2 (Volcanic): Jagged basalt stones framing a swirling orange magma vortex.
+---
 
-World 3 (Sky Islands): Floating marble pillars wrapped in ivy framing an airy cloud whirlpool.
+## 5. Hub-and-Spoke World Gate Network
 
-World 4 (Factory): Heavy iron I-beams with spinning warning lights framing a steam-spewing hatch.
+Instead of forcing all 100 stages into one continuous lag-inducing road, the Hub operates on an instanced/streamable Hub-and-Spoke architecture:
+1. **World 1 Gate (`X: 0, Y: 0, Z: +95`)**:
+   * A massive open wooden timber arch directly at the North end of the central plaza.
+   * Connects seamlessly via a scenic physical suspension bridge directly into **World 1: Green Cliffs**.
+2. **Worlds 2 through 9 Gates**:
+   * Arranged in two symmetrical semi-circular colonnades sweeping along the North-West and North-East plaza perimeter (radius 130–165 studs from Spawn).
+   * Each gate is a grand physical archway (16 studs wide × 22 studs tall) with a themed portal frame and physical status marquee:
 
-World 5 (Frozen): Giant crystalline icicles framing a swirling blue blizzard rift.
+```
+[WESTERN GATE CRESCENT: -X, +Z]                [EASTERN GATE CRESCENT: +X, +Z]
+Gate 2: Volcanic Canyon (-90, 0, +95)         Gate 3: Sky Islands (+90, 0, +95)
+Gate 4: Industrial Factory (-120, 0, +120)     Gate 5: Frozen Mountain (+120, 0, +120)
+Gate 6: Sunken Ruins (-140, 0, +150)           Gate 7: Desert Ruins (+140, 0, +150)
+Gate 8: Space Station (-150, 0, +185)          Gate 9: Glitch Dimension (+150, 0, +185)
 
-World 6 (Sunken): Carved coral arches covered in sea anemones framing a shimmering water surface.
+[TOWER GATE: AT BASE OF ROPE SPIRE: X: 0, Y: 4, Z: -190]
+Gate 10: Final Ascent (Direct grand portal into Stages 91–100)
+```
 
-World 7 (Desert): Weathered sandstone pylon arch with hieroglyphs framing a golden sand-vortex.
+* **Gate Marquee Display Format**:
+  ```
+  ┌────────────────────────────────┐
+  │       [ WORLD 2 ]              │
+  │     VOLCANIC CANYON            │
+  │      STAGES 11–20              │
+  │  STATUS: UNLOCKED / LOCKED     │
+  └────────────────────────────────┘
+  ```
 
-World 8 (Space): Hexagonal titanium airlock ring with blue laser boundaries framing a starfield portal.
+---
 
-World 9 (Glitch): Fragmented, floating geometric stone blocks framing an unstable purple void.
+## 6. Comprehensive Stage Progression Across All 10 Worlds
 
-World 10 (Final Ascent): Colossal golden gate at the direct base of the Rope Tower.
+Each world is an independent, beautifully framed linear course of **10 stages** designed specifically around momentum, pendulum swing physics, grapple releases, and vertical climbing.
 
-World Portal Signboards: Every portal features a prominent physical marquee:
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 10-STAGE WORLD PROGRESSION STRUCTURE                                                        │
+├─────────────┬─────────────────────────────────┬─────────────────────────────────────────────┤
+│ Stage Phase │ Pedagogical Intent              │ Obstacle & Mechanical Structure             │
+├─────────────┼─────────────────────────────────┼─────────────────────────────────────────────┤
+│ Stages 1–3  │ World Mechanic Introduction     │ Generous landing pads, isolated single/dual │
+│             │                                 │ grapple points, zero lethal hazards.        │
+├─────────────┼─────────────────────────────────┼─────────────────────────────────────────────┤
+│ Stages 4–6  │ Hazard Integration & Directional│ Moving obstacles, angular swing turns (45°),│
+│             │ Changes                         │ craggy hazard walls, timing-based releases. │
+├─────────────┼─────────────────────────────────┼─────────────────────────────────────────────┤
+│ Stages 7–9  │ Momentum Chaining & Verticality │ Multi-grapple mid-air chains (3-5 rings),   │
+│             │                                 │ narrow precision landing pads, moving hooks.│
+├─────────────┼─────────────────────────────────┼─────────────────────────────────────────────┤
+│ Stage 10    │ World Mini-Climax Finale        │ Grand scale vista, multi-phase traversal,   │
+│             │                                 │ massive gap crossing to Golden Win Pad.     │
+└─────────────┴─────────────────────────────────┴─────────────────────────────────────────────┘
+```
 
+---
 
-[ WORLD 2 ]
-VOLCANIC CANYON
-STAGES 11–20
-[ REQUIRES WORLD 1 CLEAR ]
-10. Social Zones & Environmental Polish
-To prevent the hub from feeling like a barren flat concrete tarmac:
+## 7. Granular Obstacle Specification: World 1 — Green Cliffs (Stages 1–10)
 
-The Campfire Lounge (X: -60, Z: +60):
-Circular seating pit with rustic log benches surrounding a crackling campfire.
-Serves as an organic social hangout point between the Spawn and the Shops.
-The Scenic Lookout Gazebo (X: +70, Z: +70):
-An elevated timber gazebo overlooking the mountain valley of World 1.
-Contains binoculars / photo spot frames where players can view other players actively swinging through Stages 1, 2, and 3 in real-time.
-Perimeter Fencing & Natural Boundaries:
-The lobby is bounded on the sides by natural pine groves, stone cliffs, and decorative water canals, preventing players from jumping into empty voids while keeping the perimeter visually rich.
-11. Performance Optimization, Modular Kit & Budget
-Roblox mobile and low-end PC performance requires deliberate budget constraints:
+World 1 begins immediately North of the World 1 Gate (`Z: +110`) and ascends a lush alpine canyon up to `Y: +95`.
 
+```
+====================================================================================================
+STAGE 1: "THE FIRST LEAP" (Z: +120 to +170, Y: 0 to +2)
+- Start Platform: 20x20 stud mossy stone deck at Z: +120.
+- Gap: 30 studs across a clear mountain brook.
+- Rope Point: 1x Carved Timber Ring suspended from an overarching pine branch (Z: +145, Y: +24).
+- Gameplay: Run forward → Jump at ledge → Grapple ring → Hold swing through bottom arc → Release forward.
+- Win Pad: 16x16 stud timber deck with glowing cyan Win Pad (Z: +170).
 
-┌────────────────────────────────────────────────────────────────────────┐
-│ ASSET MODULARITY & PERFORMANCE BUDGET                                  │
-├──────────────────────────┬─────────────────┬───────────────────────────┤
-│ Asset Category           │ Total Budget    │ Implementation Strategy   │
-├──────────────────────────┼─────────────────┼───────────────────────────┤
-│ Collision Geometry       │ < 1,500 Parts   │ Non-gameplay decorative   │
-│                          │                 │ meshes set to CanCollide  │
-│                          │                 │ = false, CanTouch = false │
-├──────────────────────────┼─────────────────┼───────────────────────────┤
-│ Modular Rocks / Cliffs   │ 4 Master Meshes │ Scaled, rotated, and      │
-│                          │                 │ tinted across all worlds  │
-├──────────────────────────┼─────────────────┼───────────────────────────┤
-│ Trees & Vegetation       │ 3 Master Meshes │ Low-poly foliage with     │
-│                          │                 │ batched materials         │
-├──────────────────────────┼─────────────────┼───────────────────────────┤
-│ Lighting / Shadows       │ ShadowMap       │ PointLights limited to    │
-│                          │                 │ key areas; CastShadow     │
-│                          │                 │ disabled on small props   │
-├──────────────────────────┼─────────────────┼───────────────────────────┤
-│ Rope Points (Mechanic)   │ Unique Glow ID  │ Instanced interactive     │
-│                          │                 │ CollectionService tags    │
-└──────────────────────────┴─────────────────┴───────────────────────────┘
-Sightline Occlusion: Mountain ridges between World 1 and World 2 occlude stage geometry beyond the player's immediate sector, allowing Roblox's streaming system (StreamingEnabled) to unload distant stages without breaking the visual skyline of the high-altitude Rope Tower.
-12. Full Map Blueprint Master Diagram
+STAGE 2: "DOUBLE PENDULUM" (Z: +180 to +250, Y: +2 to +5)
+- Gap: 50 studs across a boulder field.
+- Rope Points: 2x Wooden Rings spaced 22 studs apart (Ring A: Z: +202, Y: +26; Ring B: Z: +228, Y: +26).
+- Gameplay: Grapple Ring A → Release at apex → Catch Ring B in mid-air → Swing and touch down.
+- Win Pad: 16x16 stone deck at Z: +250.
 
-+==================================================================================================+
-|                                    WORLD 1: GREEN CLIFFS                                         |
-|                                       (Stages 1 to 10)                                           |
-|                                [X: 0 to 0, Z: +120 to +1120]                                     |
-|                                              ▲                                                   |
-|                                              │                                                   |
-|                                   [STAGE 1 GRAND GATEWAY]                                        |
-|                                    (X: 0, Y: 10, Z: +100)                                        |
-|                                              ▲                                                   |
-|                                              │                                                   |
-|     [WEST PORTAL ARC]                        │                        [EAST PORTAL ARC]          |
-|   (Worlds 2, 4, 6, 8)                        │                      (Worlds 3, 5, 7, 9)          |
-|  [X: -140 to -110, Z: +80]                   │                     [X: +110 to +140, Z: +80]     |
-|             \                                │                                /                  |
-|              \                               │                               /                   |
-|               \                              │                              /                    |
-|  [SHOPS & SOCIAL]              [CENTRAL SPAWN DAIS]               [COMPETITIVE PLAZA]            |
-|  - Rope Shop (-95, +20)        (X: 0, Y: 10, Z: 0)                - 4x Leaderboards (+85, 0)     |
-|  - Trail Shop (-95, -20)       Diameter: 70 studs                 - Top Podiums (+70, 0)         |
-|  - Campfire Lounge (-60, +60)  Clear 360° Sightlines              - Lookout Gazebo (+70, +60)    |
-|               /                              │                              \                    |
-|              /                               │                               \                   |
-|             /                                │                                \                  |
-|            /                    [GRAND STAIRCASE: -Z: -55]                     \                 |
-|           /                        (Ascent +12 Studs)                           \                |
-|          ▼                                   │                                   ▼               |
-|  [REBIRTH SANCTUM]                           │                     [AFK TRAINING COMPOUND]       |
-|  - Golden Rope Monolith                      │                     - 1X Wall (-25, -125) [0 Reb] |
-|  - Rebirth Milestones                        │                     - 2X Rig (+15, -135) [3 Reb]  |
-|    (X: -75, Y: 22, Z: -120)                  │                     - 3X Cage (+55, -150) [5 Reb] |
-|                                              │                     - 5X Gantry (+105,-170)[10 Reb|
-|                                              ▼                                                   |
-|                                 [THE ROPE TOWER BASE]                                            |
-|                                (X: 0, Y: 20, Z: -260)                                            |
-|                              Footprint: 180x180 studs                                            |
-|                            Height: 1,800+ studs (Sky Limit)                                      |
-|                             Contains World 10 (Stages 91-100)                                    |
-|                             Peak: "YOU ESCAPED" Grand Platform                                   |
-+==================================================================================================+
+STAGE 3: "LONG CANYON SWING" (Z: +260 to +350, Y: +5 to +10)
+- Gap: 70-stud broad gorge.
+- Rope Point: 1x Heavy Swivel Timber Hook mounted beneath a high stone archway (Z: +305, Y: +42).
+- Gameplay: Requires full momentum conservation. A premature release drops into water; player must wait for maximum forward pendulum extension.
+- Win Pad: 18x18 wooden scaffold at Z: +350.
+
+STAGE 4: "TIMBER CLIFF ASCENT" (Z: +360 to +410, Y: +10 to +42) [VERTICAL FOCUS]
+- Challenge: Ascending a sheer 32-stud vertical cliff wall.
+- Rope Points: 3x Vertically Staggered Wall Rings mounted at Y: +20, Y: +32, and Y: +42.
+- Gameplay: Rapid re-grapple climbing: Grapple → Pull up → Jump/Release → Instantly grapple next ring up.
+- Win Pad: Clifftop turf terrace at Z: +410, Y: +42.
+
+STAGE 5: "THE SWAYING LOG" (Z: +420 to +500, Y: +42 to +45)
+- Challenge: 60-stud gap over a roaring waterfall.
+- Obstacle: A massive 30-stud-long suspended cedar log swinging laterally (East-West) like a clock pendulum.
+- Rope Point: 1x Iron Ring bolted directly to the center of the swinging log.
+- Gameplay: Grapple moving anchor, absorb lateral kinetic sway, and release straight forward onto landing.
+- Win Pad: 16x16 stone platform at Z: +500.
+
+STAGE 6: "AROUND THE BUTTRESS" (Z: +510 to +585, Y: +45 to +52) [DIRECTION CHANGE]
+- Challenge: Path turns 45° East around a blind cliff corner.
+- Rope Point: 1x Cantilevered Outrigger Beam projecting from the granite corner (X: +18, Z: +545, Y: +72).
+- Gameplay: Hook ring, swing around the rock face in a curving centrifugal arc, and spot the hidden landing ledge.
+- Win Pad: Ledge platform at X: +25, Z: +585, Y: +52.
+
+STAGE 7: "THORN VALLEY TRAVERSAL" (Z: +595 to +680, Y: +52 to +55) [HAZARDS]
+- Hazard: Dense briars and sharp bramble branches line the canyon floor and walls.
+- Rope Points: 2x Low-Hanging Rings under a narrow rock tunnel roof.
+- Gameplay: Flat, controlled swing arc. Over-jumping hits ceiling spikes; under-swinging touches thorns.
+- Win Pad: Stone cave landing at Z: +680.
+
+STAGE 8: "FOUR-HOOK RHYTHM CHAIN" (Z: +690 to +800, Y: +55 to +70)
+- Gap: 90 studs.
+- Rope Points: 4x Timber Rings spaced evenly 20 studs apart in an ascending staircase.
+- Gameplay: Rapid rhythmic traversal: Swing-release-swing-release in continuous fluid motion.
+- Win Pad: 18x18 wooden deck at Z: +800, Y: +70.
+
+STAGE 9: "THE SHATTERED SUSPENSION BRIDGE" (Z: +810 to +920, Y: +70 to +80)
+- Environment: A collapsed 100-stud suspension footbridge hanging in frayed pieces.
+- Traversal: Alternating between 6x6-stud broken bridge planks and mid-air grapple hooks strung beneath remaining support ropes.
+- Checkpoint: Rest platform placed at midpoint (Z: +865).
+- Win Pad: Granite abutment at Z: +920, Y: +80.
+
+STAGE 10: "WORLD 1 FINALE: THE GREAT CATARACT" (Z: +930 to +1080, Y: +80 to +95)
+- Scenery: A titanic 100-stud-tall cascading waterfall misting the air with volumetric spray particles.
+- Obstacle: 120-stud massive chasm. Three tiered giant rings hung from rock spires across the waterfall face.
+- Climax: Final swing launches the player directly through the mist screen onto a grand golden pedestal.
+- Finale Win Pad: 28x28 circular carved stone platform with floating 3D golden signage:
+  ```
+  ★ WORLD 1 COMPLETE ★
+  [RETURN TO HUB]  •  [ENTER WORLD 2]
+  ```
+====================================================================================================
+```
+
+---
+
+## 8. Visual & Architectural Identities of Worlds 2 through 10
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│ WORLDS 2–10 DESIGN SPECIFICATIONS                                                           │
+├─────────┬───────────────────┬──────────────────────┬────────────────────────────────────────┤
+│ World   │ Theme             │ Anchor Prop Style    │ Key Mechanics & Environment Highlights │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 2 │ Volcanic Canyon   │ Heavy Metal Slag     │ Basalt rock, boiling lava hazards,     │
+│         │ (Stages 11–20)    │ Hook on iron chain   │ crumbling platforms, upward steam geysers│
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 3 │ Sky Islands       │ Floating Luminous    │ Endless cloud sea, moving cloud islands│
+│         │ (Stages 21–30)    │ Aero-Ring (cyan glow)│ crosswinds, swinging from airship ropes│
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 4 │ Industrial Factory│ Mechanical Hydraulic │ Giant rotating gears (swing between    │
+│         │ (Stages 31–40)    │ Grapple Clamps       │ teeth), conveyor belts, steam valves   │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 5 │ Frozen Mountain   │ Forged Steel Ice     │ Sheer vertical climbs, sliding ice pads│
+│         │ (Stages 41–50)    │ Piton Spikes         │ swinging in blizzard winds, icicles    │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 6 │ Sunken Ruins      │ Ancient Weathered    │ Underwater cavern aesthetics, coral,   │
+│         │ (Stages 51–60)    │ Runestone Ring       │ floaty momentum arcs, sunken ships     │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 7 │ Desert Ruins      │ Sun-Gilded Falcon    │ Sandstone temples, collapsing columns, │
+│         │ (Stages 61–70)    │ Metal Hook           │ swinging over quicksand pits & chasms  │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 8 │ Space Station     │ Mag-Beam Energy Node │ Zero-g flat trajectory grapples,       │
+│         │ (Stages 71–80)    │ (neon blue pulse)    │ laser tripwires, orbital station hull  │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 9 │ Glitch Dimension  │ Corrupted Fractured  │ Inverted geometry, disappearing anchor │
+│         │ (Stages 81–90)    │ Wireframe Cube       │ rings, fused fragments of prior worlds │
+├─────────┼───────────────────┼──────────────────────┼────────────────────────────────────────┤
+│ World 10│ Final Ascent      │ Colossal Golden      │ Direct ascent of Rope Spire, pinnacle  │
+│         │ (Stages 91–100)   │ Aegis Anchor         │ difficulty, view overlooking all worlds│
+└─────────┴───────────────────┴──────────────────────┴────────────────────────────────────────┘
+```
+
+---
+
+## 9. Universal Interactive Props & Visual Grammar
+
+### 9.1 The Win Pad
+* **Dimensions**: 12-stud diameter circular cylinder, raised 0.8 studs above the landing platform.
+* **Material & Color**: World-themed stone/metal rim with an interior pulsing neon core (`Institutional White` core with outer theme-colored corona).
+* **Floating 3D Icon**: A bobbing, rotating stylized banner 6 studs above the pad:
+  ```
+  +WIN
+  [TOUCH TO COMPLETE]
+  ```
+* **Readability**: Placed strictly in line with the terminal swing trajectory. No visual clutter or geometry ever obscures the approach vector.
+
+### 9.2 Checkpoints
+* **Placement**: Safe rest platforms positioned before major multi-phase skill checks (e.g., between Stages 4/5 and 8/9).
+* **Architecture**: A carved 6-stud-tall stone pedestal with a floating, softly glowing spherical beacon. Walking over changes color from Neutral White to Activated Emerald Green with a chime sound effect.
+
+### 9.3 Rope Points
+* **Visual Identity**: Every interactive grapple point features a distinctive high-contrast silhouette and an active **Glow Ring** (`Size: 3x3 studs`) that emits subtle directional light.
+* **State Indication**:
+  * *In Reach (within 65 studs)*: Ring pulses with active cyan energy and highlights with a subtle billboard cursor.
+  * *Out of Reach*: Solid world-themed static texture.
+
+---
+
+## 10. Player Onboarding & Natural Traversal Loop
+
+```
+[1. PLAYER SPAWNS AT (0, 0, 0)]
+   │
+   ├─► Immediate 360° visual read:
+   │   - Directly Ahead (North): World 1 Grand Archway & Stages 1–10
+   │   - Directly Behind (South): Towering Rope Spire & AFK Training Rigs
+   │   - Left (West): Rope Shop & Trail Shop
+   │   - Right (East): Global Leaderboards & Top Player Statues
+   │
+[2. FIRST ACTION: STAGE PROGRESSION]
+   │
+   └─► Natural forward pull toward World 1 Gate (6s walk)
+       └─► Clears Stage 1 (learns jump-grapple-release) → Receives first Win
+       └─► Continues through Stages 2–10 → Accumulates Wins & baseline Rope EXP
+   │
+[3. DISCOVERY OF SHOPS]
+   │
+   └─► Player returns to Hub with Wins → Visits Rope Shop (West)
+       └─► Purchases Tier 2 Rope → Equips higher EXP/Swing multiplier
+   │
+[4. DISCOVERY OF TRAINING & REBIRTH]
+   │
+   └─► Player explores South Terrace
+       └─► Enters 1X Rope Trainer → AFK trains Rope EXP while studying locked 2X/3X/5X Rigs
+       └─► Reaches Rope Level 10 → Steps onto Rebirth Shrine Altar
+       └─► Executes Rebirth 1 → Gains permanent multiplier
+   │
+[5. LONG-TERM RETENTION LOOP]
+   │
+   └─► Accumulates 3 Rebirths → Unlocks 2X Auto-Climb Rig
+   └─► Unlocks World 2 Gate (Volcanic Canyon) → Progresses to Stages 11–20
+   └─► Strives for 10 Rebirths to operate the colossal 5X Auto-Climb Rig
+   └─► Ultimate goal: Conquer World 10 (Final Ascent) on the Rope Spire
+```
+
+---
+
+## 11. Performance Optimization & Roblox Studio Feasibility
+
+1. **StreamingEnabled Friendly**:
+   * Worlds are spaced modularly along radial vectors. With `ModelStreamingMode = Atomic` on each world folder, mobile clients only render the Central Hub and the specific active world, maintaining rock-solid 60 FPS.
+2. **Modular Asset Kit**:
+   * All cliffs and rock walls across Worlds 1–10 are composed of just **4 master low-poly rock meshes**, dynamically scaled, rotated, and tinted with custom `Color3` and `MaterialVariant` settings.
+3. **Collision Budget**:
+   * All decorative foliage, hanging background ropes, and distant architectural braces have `CanCollide = false`, `CanTouch = false`, and `CastShadow = false`.
+   * Only active jump pads, landing decks, and obstacle surfaces carry active physics collisions.
+4. **Lighting & Shadows**:
+   * Hub uses `Technology = ShadowMap` with `GlobalShadows = true`.
+   * PointLights on shop racks and training rigs have strict 16-stud ranges to eliminate GPU light overlap penalties.
